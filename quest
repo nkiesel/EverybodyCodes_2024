@@ -1,0 +1,35 @@
+#!/bin/zsh
+
+# The URL uses un-padded day numbers, but we use 0-padded day numbers for the code and input file names.
+# Thus, we build 2 day variables
+# set TZ so that we get the correct day within the first 24 hours of the published puzzle
+dd=${1:-$(TZ=America/New_York date '+%d')}
+d=$dd
+[[ "${d[1]}" -eq 0 ]] && d="${dd[2]}"
+[[ ${#dd} -eq 1 ]] && dd="0$dd"
+
+dir="src/test/kotlin"
+template="$dir/Template.kt"
+code="$dir/Quest$dd.kt"
+
+if [[ ! -s "$code" ]]; then
+  sed -e "s/XX/$dd/g" "$template" > "$code"
+  git add "$code"
+fi
+
+input() {
+  part=$1
+  file="input/everybody_codes_e2024_q${dd}_p${part}.txt"
+  if [[ ! -f "$file" ]]; then
+    ../../Data/quest $d $part
+    cat $file
+    exit
+  fi
+}
+
+input 1
+input 2
+input 3
+#../../Data/quest $d 1
+#../../Data/quest $d 2
+#../../Data/quest $d 3
