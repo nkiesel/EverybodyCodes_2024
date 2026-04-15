@@ -20,11 +20,12 @@ object Quest03 {
             val neighbors: (Point, Char) -> List<Point> = if (nc == 4) area::neighbors4 else area::neighbors8
             val prev = removed
             val next = area.clone()
+            val nextLevel = level + 1
             area.tiles(level).filter { p -> neighbors(p, level).count() == nc }.forEach { p ->
-                next[p] = level + 1
+                next[p] = nextLevel
                 removed++
             }
-            level++
+            level = nextLevel
             area = next
         } while (removed > prev)
         return removed
