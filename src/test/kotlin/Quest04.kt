@@ -15,7 +15,7 @@ object Quest04 {
 
     fun three(input: List<String>): Int {
         val nails = parse(input)
-        return (nails.min()..nails.max()).minOf { target -> nails.sumOf { abs(it - target) } }
+        return nails.distinct().minOf { target -> nails.sumOf { abs(it - target) } }
     }
 }
 
