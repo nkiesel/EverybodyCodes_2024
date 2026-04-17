@@ -8,7 +8,7 @@ object Quest07 {
     fun one(input: List<String>): String {
         val data = parse(input)
         val values = mutableMapOf<String, Int>()
-        for ((k, ops) in data.entries) {
+        for ((k, ops) in data) {
             var v = 10
             var s = 0
             repeat(10) { r ->
@@ -31,24 +31,24 @@ object Quest07 {
                 (1..<ly).map { trackData[it][lx] }.joinToString("") +
                 trackData[ly].reversed() +
                 (0..<ly).map { trackData[it][0] }.reversed().joinToString("")
-        val plans = data.entries.associate { (plan, ops) ->
-            plan to track.withIndex()
-                .map { (i, c) -> if (c == '=' || c == 'S') ops[i % ops.length] else c }.joinToString("")
-        }
         val essences = buildMap {
-            for ((plan, ops) in plans.entries) {
+            for ((plan, ops) in data) {
                 var v = 10
-                put(plan, (0..<(track.length * 10)).sumOf {
-                    when (ops[it % ops.length]) {
+                var sum = 0
+                for (ti in 0..<(track.length * 10)) {
+                    sum += when (track[ti % track.length]) {
                         '+' -> ++v
                         '-' -> --v
-                        else -> v
+                        else -> when (ops[ti % ops.length]) {
+                            '+' -> ++v
+                            '-' -> --v
+                            else -> v
+                        }
                     }
-                })
+                }
+                put(plan, sum)
             }
         }
-        essences.forEach { (p, e) -> println("$p: $e") }
-        println("-".repeat(10))
         return essences.entries.sortedByDescending { it.value }.joinToString("") { it.key }
     }
 
@@ -100,7 +100,7 @@ val Quest07Test by testSuite {
                 -                                                                     -
                 --==++++==+=+++-=+=-=+=-+-=+-=+-=+=-=+=--=+++=++=+++==++==--=+=++==+++-
             """.trimIndent().lines()
-            two(input, track) shouldNotBe "BEDJGIFHK"
+            two(input, track) shouldBe "IGDEJFBHK"
         }
 
         test("three") {
