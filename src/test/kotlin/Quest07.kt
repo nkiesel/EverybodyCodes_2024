@@ -64,30 +64,28 @@ object Quest07 {
                 pos = n
                 add(area[pos])
             } while (pos != s)
-        }.joinToString("")
+        }
 
-        fun essence(ops: String): Long {
-            var v = 10
-            var sum = 0L
-            for (ti in 0..<(track.length * 2024)) {
-                sum += when (track[ti % track.length]) {
+        fun essence(ops: List<Char>): Long {
+            var v = 10L
+            val ts = track.size
+            val os = ops.size
+            return (0..<(ts * 2024)).sumOf { ti ->
+                when (track[ti % ts]) {
                     '+' -> ++v
                     '-' -> --v
-                    else -> when (ops[ti % ops.length]) {
+                    else -> when (ops[ti % os]) {
                         '+' -> ++v
                         '-' -> --v
                         else -> v
                     }
                 }
             }
-            return sum
         }
 
-        val rival = essence(parse(input).values.first())
-        val seen = mutableSetOf<String>()
-        return "+++++---===".toList().permutations().count { plan ->
-            plan.joinToString("").let { seen.add(it) && essence(it) > rival }
-        }
+        val rival = essence(parse(input).values.first().toList())
+        val seen = mutableSetOf<List<Char>>()
+        return "+++++---===".toList().permutations().count { seen.add(it) && essence(it) > rival }
     }
 }
 
