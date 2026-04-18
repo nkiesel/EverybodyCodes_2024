@@ -52,6 +52,7 @@ object Quest07 {
     }
 
     fun three(input: List<String>, trackData: List<String>): Int {
+        val rivalOps = parse(input).values.first().toList()
         val area = CharArea(trackData)
         var pos = Point(1, 0)
         val s = Point(0, 0)
@@ -65,11 +66,11 @@ object Quest07 {
                 add(area[pos])
             } while (pos != s)
         }
+        val ts = track.size
+        val os = rivalOps.size
 
         fun essence(ops: List<Char>): Long {
             var v = 10L
-            val ts = track.size
-            val os = ops.size
             return (0..<(ts * 2024)).sumOf { ti ->
                 when (track[ti % ts]) {
                     '+' -> ++v
@@ -83,7 +84,7 @@ object Quest07 {
             }
         }
 
-        val rival = essence(parse(input).values.first().toList())
+        val rival = essence(rivalOps)
         val seen = mutableSetOf<List<Char>>()
         return "+++++---===".toList().permutations().count { seen.add(it) && essence(it) > rival }
     }
