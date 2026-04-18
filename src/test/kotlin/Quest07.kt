@@ -1,6 +1,5 @@
 import de.infix.testBalloon.framework.core.testSuite
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
 
 object Quest07 {
     private fun parse(input: List<String>) = input.map { it.split(":") }.associate { (k, v) -> k to v.replace(",", "") }
@@ -52,8 +51,43 @@ object Quest07 {
         return essences.entries.sortedByDescending { it.value }.joinToString("") { it.key }
     }
 
-    fun three(input: List<String>): Int {
-        return 0
+    fun three(input: List<String>, trackData: List<String>): Int {
+        val area = CharArea(trackData)
+        var pos = Point(1, 0)
+        val s = Point(0, 0)
+        var prev = s
+        val track = buildList {
+            add(area[pos])
+            do {
+                val n = area.neighbors4(pos) { it != ' ' }.first { it != prev }
+                prev = pos
+                pos = n
+                add(area[pos])
+            } while (pos != s)
+        }.joinToString("")
+
+        fun essence(ops: String): Long {
+            var v = 10
+            var sum = 0L
+            for (ti in 0..<(track.length * 2024)) {
+                sum += when (track[ti % track.length]) {
+                    '+' -> ++v
+                    '-' -> --v
+                    else -> when (ops[ti % ops.length]) {
+                        '+' -> ++v
+                        '-' -> --v
+                        else -> v
+                    }
+                }
+            }
+            return sum
+        }
+
+        val rival = essence(parse(input).values.first())
+        val seen = mutableSetOf<String>()
+        return "+++++---===".toList().permutations().count { plan ->
+            plan.joinToString("").let { seen.add(it) && essence(it) > rival }
+        }
     }
 }
 
@@ -104,12 +138,20 @@ val Quest07Test by testSuite {
         }
 
         test("three") {
-            val sample = """
+            val track = """
+                S+= +=-== +=++=     =+=+=--=    =-= ++=     +=-  =+=++=-+==+ =++=-=-=--
+                - + +   + =   =     =      =   == = - -     - =  =         =-=        -
+                = + + +-- =-= ==-==-= --++ +  == == = +     - =  =    ==++=    =++=-=++
+                + + + =     +         =  + + == == ++ =     = =  ==   =   = =++=       
+                = = + + +== +==     =++ == =+=  =  +  +==-=++ =   =++ --= + =          
+                + ==- = + =   = =+= =   =       ++--          +     =   = = =--= ==++==
+                =     ==- ==+-- = = = ++= +=--      ==+ ==--= +--+=-= ==- ==   =+=    =
+                -               = = = =   +  +  ==+ = = +   =        ++    =          -
+                -               = + + =   +  -  = + = = +   =        +     =          -
+                --==++++==+=+++-= =-= =-+-=  =+-= =-= =--   +=++=+++==     -=+=++==+++-
             """.trimIndent().lines()
-            three(sample) shouldBe 0
-
-//            val input = lines(quest, 3)
-//            three(input) shouldBe 0
+            val input = lines(quest, 3)
+            three(input, track) shouldBe 4275
         }
     }
 }
