@@ -61,7 +61,8 @@ enum class Direction {
 
 @JvmInline
 value class LongPos(val value: Long) {
-    constructor(x: Int, y: Int): this((x.toLong() shl 32) or (y.toLong() and 0xFFFF_FFFFL))
+    constructor(x: Int, y: Int) : this((x.toLong() shl 32) or (y.toLong() and 0xFFFF_FFFFL))
+
     override fun toString() = "[$x,$y]"
     operator fun component1() = value.shr(32).toInt()
     operator fun component2() = (value and 0xFFFF_FFFFL).toInt()
@@ -156,8 +157,8 @@ class CharArea(private val area: Array<CharArray>) {
     fun tiles(c: Char): Sequence<Point> = tiles { it == c }
 
     fun tiles(condition: Condition? = null): Sequence<Point> = sequence {
-        for (x in xRange) {
-            for (y in yRange) {
+        for (y in yRange) {
+            for (x in xRange) {
                 Point(x, y).takeIf { ok(it, condition) }?.let { yield(it) }
             }
         }
