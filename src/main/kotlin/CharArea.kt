@@ -72,6 +72,8 @@ val LongPos.x get() = component1()
 val LongPos.y get() = component2()
 
 data class Point(val x: Int, val y: Int) : Comparable<Point> {
+    constructor(s: String): this(s.ints()[0], s.ints()[1])
+
     fun move(d: Direction, n: Int = 1) = when (d) {
         N -> move(0, -n)
         NE -> move(n, -n)
@@ -108,6 +110,8 @@ data class Point(val x: Int, val y: Int) : Comparable<Point> {
     }
 
     override fun compareTo(other: Point): Int = compareValuesBy(this, other, Point::y, Point::x)
+
+    override fun toString(): String = "[$x,$y]"
 }
 
 class CharArea(private val area: Array<CharArray>) {
