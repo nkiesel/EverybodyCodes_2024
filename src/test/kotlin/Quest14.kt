@@ -1,6 +1,6 @@
 import de.infix.testBalloon.framework.core.testSuite
 import io.kotest.matchers.shouldBe
-import javax.swing.text.Segment
+import jdk.internal.org.jline.utils.Colors.s
 import kotlin.math.abs
 import kotlin.math.max
 
@@ -33,6 +33,12 @@ object Quest14 {
                 'B' -> copy(z = z + 1)
                 else -> error("Unexpected direction $direction")
             }
+        }
+
+        fun manhattanDistance(o: Segment): Int = manhattanDistance(x, y, z, o.x, o.y, o.z)
+
+        fun neighbors(others: List<Segment>): List<Segment> {
+            return others.filter { manhattanDistance(it) == 1 }
         }
     }
 
@@ -69,11 +75,19 @@ object Quest14 {
             }
             leaves += seg
         }
+
         var murkiness = Int.MAX_VALUE
         for (mb in segments.filter { it.x == 0 && it.z == 0 }) {
-            // TODO: cannot be just Manhattan distance, we must instead find shortest path that steps through all occupied segments
-            val s = leaves.sumOf { l -> abs(l.x - mb.x) + abs(l.y - mb.y) + abs(l.z - mb.z) }
-            murkiness = minOf(murkiness, s)
+            val nodes = segments.map { Node(it, it.manhattanDistance(mb)) }
+            val edges = nodes.associateWith { node ->
+                node.name.neighbors(segments.toList()).map { n -> Edge(nodes.first { it.name == n }, 1) }
+            }
+            val graph = AStarGraph(edges)
+            val paths = leaves.map { leave -> graph.findShortestPath(nodes.first { it.name == leave }, nodes.first() { it.name == mb }) }
+            if (paths.none { it == null }) {
+                val s = paths.sumOf { it!!.size } - paths.size
+                murkiness = minOf(murkiness, s)
+            }
         }
         return murkiness
     }
@@ -120,8 +134,8 @@ val Quest14Test by testSuite {
             """.trimIndent().lines()
             three(sample2) shouldBe 46
 
-//            val input = lines(quest, 3)
-//            three(input) shouldBe 0
+            val input = lines(quest, 3)
+            three(input) shouldBe 1436
         }
     }
 }
