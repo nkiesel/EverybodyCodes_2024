@@ -8,7 +8,7 @@ import kotlin.math.min
 
 typealias IntPair = Pair<Int, Int>
 
-fun lines(quest: String, part: Int) = Path("input/everybody_codes_e2024_q${quest}_p${part}.txt").readLines()
+fun lines(quest: String, part: Int) = Path("input/everybody_codes_e2026_q${quest}_p${part}.txt").readLines()
 
 /**
  * Creates a sequence of permutations. number of permutations of a list of length n is n!. This is an implementation
