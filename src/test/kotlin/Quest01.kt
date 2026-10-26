@@ -25,7 +25,7 @@ object Quest01 {
             var s = maxOf(3, ceil(sqrt(n.toDouble())).toInt())
             if (s % 2 == 0) s++
             val a = s * s - n - 1
-            if (a >= 0) a else (s + 2) * (s + 2) - n - 1
+            if (a >= 0) a else a + 4 * (s + 1)
         }
     }
 }
