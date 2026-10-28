@@ -1,12 +1,10 @@
-import jdk.internal.vm.vector.VectorSupport.test
-
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.versions.update)
     alias(libs.plugins.testballon)
 }
 
-version = "2024"
+version = "2026"
 
 repositories {
     mavenCentral()

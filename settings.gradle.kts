@@ -1,1 +1,1 @@
-rootProject.name = "ebc2024"
+rootProject.name = "ebc2026"
