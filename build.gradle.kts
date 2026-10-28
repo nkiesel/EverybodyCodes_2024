@@ -1,3 +1,5 @@
+import jdk.internal.vm.vector.VectorSupport.test
+
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.versions.update)
@@ -32,6 +34,7 @@ kotlin {
                 "context-sensitive-resolution",
                 "context-parameters",
                 "nested-type-aliases",
+                "collection-literals",
                 "explicit-backing-fields",
             ).map { "-X$it" }
         )
